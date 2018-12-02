@@ -1,4 +1,4 @@
-# MachineLearning
+# Machine Learning
 - Assignments on Machine Learning course.
 
 ### Assignment 1
