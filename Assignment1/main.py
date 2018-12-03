@@ -2,6 +2,7 @@ import numpy as np
 import argparse, os
 from utils import load_data, make_path
 from pca import pca_train, pca_test
+from svd import svd_train, svd_test
 from knn import knn
 
 parser = argparse.ArgumentParser(description='Dimensionality Reduction')
@@ -24,19 +25,29 @@ def train():
     if args.alg == 'pca':
         mean_vecs, eig_vecs = pca_train(np.array(train_data), args.dim)
         np.savez(os.path.join(args.output, 'pca' + str(args.dim) + '.npz'), mean_vecs=mean_vecs, eig_vecs=eig_vecs)
+    elif args.alg == 'svd':
+        v = svd_train(np.array(train_data), args.dim)
+        np.savez(os.path.join(args.output, 'svd' + str(args.dim) + '.npz'), v=v)
 
 
 def test():
     test_data, test_labels = load_data(test_data_path)
     train_data, train_labels = load_data(train_data_path)
 
+    saved_data  = np.load(os.path.join(args.output, args.alg + str(args.dim) + '.npz'))
     if args.alg == 'pca':
-        saved_data  = np.load(os.path.join(args.output, 'pca' + str(args.dim) + '.npz'))
         mean_vecs = saved_data['mean_vecs']
         eig_vecs = saved_data['eig_vecs']
 
         reduction_test_data = pca_test(np.array(test_data), mean_vecs, eig_vecs)
         reduction_train_data = pca_test(np.array(train_data), mean_vecs, eig_vecs)
+    elif args.alg == 'svd':
+        v = saved_data['v']
+
+        reduction_test_data = svd_test(np.array(test_data), v)
+        reduction_train_data = svd_test(np.array(train_data), v)
+
+
 
     acc = eval(reduction_test_data, test_labels, reduction_train_data, train_labels)
     print('ACC = ' + str(acc))
