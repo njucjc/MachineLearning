@@ -1,0 +1,305 @@
+\documentclass[a4paper,UTF8]{article}
+\usepackage{ctex}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{epsfig}
+\usepackage{color}
+\usepackage{mdframed}
+\usepackage{lipsum}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\newmdtheoremenv{thm-box}{myThm}
+\newmdtheoremenv{prop-box}{Proposition}
+\newmdtheoremenv{def-box}{定义}
+
+\usepackage{algorithm}  
+\usepackage{algorithmicx}  
+\usepackage{algpseudocode} 
+\floatname{algorithm}{算法}  
+\renewcommand{\algorithmicrequire}{\textbf{输入:}}  
+\renewcommand{\algorithmicensure}{\textbf{输出:}}  
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+	numbers=left, 
+	numberstyle= \tiny, 
+	keywordstyle= \color{ blue!70},
+	commentstyle= \color{red!50!green!50!blue!50}, 
+	frame=shadowbox, % 阴影效果
+	rulesepcolor= \color{ red!20!green!20!blue!20} ,
+	escapeinside=``, % 英文分号中可写入中文
+	xleftmargin=2em,xrightmargin=2em, aboveskip=1em,
+	framexleftmargin=2em
+} 
+
+\usepackage{booktabs}
+
+\setlength{\evensidemargin}{.25in}
+\setlength{\textwidth}{6in}
+\setlength{\topmargin}{-0.5in}
+\setlength{\topmargin}{-0.5in}
+% \setlength{\textheight}{9.5in}
+%%%%%%%%%%%%%%%%%%此处用于设置页眉页脚%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}                                
+\usepackage{lastpage}                                           
+\usepackage{layout}                                             
+\footskip = 10pt 
+\pagestyle{fancy}                    % 设置页眉                 
+\lhead{2018年秋季}                    
+\chead{高级机器学习}                                                
+% \rhead{第\thepage/\pageref{LastPage}页} 
+\rhead{作业一}                                                                                               
+\cfoot{\thepage}                                                
+\renewcommand{\headrulewidth}{1pt}  			%页眉线宽，设为0可以去页眉线
+\setlength{\skip\footins}{0.5cm}    			%脚注与正文的距离           
+\renewcommand{\footrulewidth}{0pt}  			%页脚线宽，设为0可以去页脚线
+
+\makeatletter 									%设置双线页眉                                        
+\def\headrule{{\if@fancyplain\let\headrulewidth\plainheadrulewidth\fi%
+\hrule\@height 1.0pt \@width\headwidth\vskip1pt	%上面线为1pt粗  
+\hrule\@height 0.5pt\@width\headwidth  			%下面0.5pt粗            
+\vskip-2\headrulewidth\vskip-1pt}      			%两条线的距离1pt        
+ \vspace{6mm}}     								%双线与下面正文之间的垂直间距              
+\makeatother  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\numberwithin{equation}{section}
+%\usepackage[thmmarks, amsmath, thref]{ntheorem}
+\newtheorem{theorem}{Theorem}
+\newtheorem*{definition}{Definition}
+\newtheorem*{solution}{Solution}
+\newtheorem*{prove}{Proof}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+\usepackage{multirow}
+
+%--
+
+%--
+\begin{document}
+\title{高级机器学习\\
+作业一}
+\author{学号：MF1033004, 作者姓名：陈锦赐, 邮箱：jimchen@smail.nju.edu.cn}
+\maketitle
+
+\section{[25pts] Multi-Class Logistic Regression}
+教材的章节3.3介绍了对数几率回归解决二分类问题的具体做法。假定现在的任务不再是二分类问题，而是多分类问题，其中$y\in\{1,2\dots,K\}$。请将对数几率回归算法拓展到该多分类问题。
+
+\begin{enumerate}
+	\item \textbf{[15pts]} 给出该对率回归模型的“对数似然”(log-likelihood);
+	\item \textbf{[5pts]} 计算出该“对数似然”的梯度。
+\end{enumerate}
+
+提示1：假设该多分类问题满足如下$K-1$个对数几率，
+\begin{eqnarray*}
+	\ln\frac{p(y=1|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_1^\mathrm{T}\mathbf{x}+b_1\\
+	\ln\frac{p(y=2|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_2^\mathrm{T}\mathbf{x}+b_2\\
+	&\dots&\\
+	\ln\frac{p(y={K-1}|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_{K-1}^\mathrm{T}\mathbf{x}+b_{K-1}
+\end{eqnarray*}
+
+提示2：定义指示函数$\mathbb{I}(\cdot)$，
+$$\mathbb{I}(y=j)=
+\begin{cases}
+1& \text{若$y$等于$j$}\\
+0& \text{若$y$不等于$j$}
+\end{cases}$$
+
+\begin{solution}
+此处用于写解答(中英文均可)
+\begin{enumerate}
+	\item 对于所有的K个可能的分类结果，运用$K-1$个独立的二元对数几率回归模型建模，即把其中一个类别看作主类别，然后将其他$K-1$个类别和选取的主类别分别进行对数几率回归。据此，若将类别$K$作为主类别，可以得到如下$K-1$个式子：
+		\begin{eqnarray}
+			\ln\frac{p(y=1|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_1^\mathrm{T}\mathbf{x}+b_1\\
+			\ln\frac{p(y=2|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_2^\mathrm{T}\mathbf{x}+b_2 \nonumber\\
+			&\dots& \nonumber\\
+			\ln\frac{p(y={K-1}|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_{K-1}^\mathrm{T}\mathbf{x}+b_{K-1} \nonumber
+		\end{eqnarray}
+		对式子$(1.1)$的左右两边进行指数化，可以得到如下$K-1$个式子：
+		\begin{eqnarray}
+			p(y=1|\mathbf{x})&=&p(y=K|\mathbf{x})e^{\mathbf{w}_1^\mathrm{T}\mathbf{x}+b_1}\\
+			p(y=2|\mathbf{x})&=&p(y=K|\mathbf{x})e^{\mathbf{w}_2^\mathrm{T}\mathbf{x}+b_2} \nonumber\\
+			&\dots& \nonumber\\
+			p(y={K-1}|\mathbf{x})&=&p(y=K|\mathbf{x})e^{\mathbf{w}_{K-1}^\mathrm{T}\mathbf{x}+b_{K-1}} \nonumber
+		\end{eqnarray}
+		注意到最终所有类别的概率加起来为1，故将式子$(1.2)$左右相加，我们可以得到如下式子：
+		\begin{eqnarray}
+			p(y=K|\mathbf{x})&=&1-\sum_{k=1}^{K-1}p(y=K|\mathbf{x})e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}\\
+			\Rightarrow p(y=K|\mathbf{x})&=&\frac{1}{1+\sum_{k=1}^{K-1} e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}}
+		\end{eqnarray}
+		将式子$(1.4)$带入式子$(1.2)$得到如下$K-1$个式子：
+		\begin{eqnarray}
+			p(y=1|\mathbf{x})&=&\frac{e^{\mathbf{w}_1^\mathrm{T}\mathbf{x}+b_1}}{1+\sum_{k=1}^{K-1} e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}}\\
+			p(y=2|\mathbf{x})&=&\frac{e^{\mathbf{w}_2^\mathrm{T}\mathbf{x}+b_2}}{1+\sum_{k=1}^{K-1} e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}} \nonumber\\
+			&\dots& \nonumber\\
+			p(y={K-1}|\mathbf{x})&=&\frac{e^{\mathbf{w}_{K-1}^\mathrm{T}\mathbf{x}+b_{K-1}}}{1+\sum_{k=1}^{K-1} e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}} \nonumber
+		\end{eqnarray}
+		%为了方便讨论，令$\mathbf{\beta}_i=(\mathbf{w}_i;b_i)$，$\mathbf{\widehat{x}}=(\mathbf{x};1)$
+		定义指示函数：
+		$$\mathbb{I}(y=j)=
+		\begin{cases}
+		1& \text{若$y$等于$j$}\\
+		0& \text{若$y$不等于$j$}
+		\end{cases}$$
+		则其对数似然为：
+
+	\item 这是我的解答
+\end{enumerate}
+\end{solution}
+\newpage
+
+\section{[15pts] Semi-Supervised Learning}
+我们希望使用半监督学习的方法来对文本文档进行分类。假设我们使用二进制指示符的词袋模型描述各个文档，在这里，我们的词库有$10000$个单词，因此每个文档由长度为$10000$的二进制向量表示。
+
+对于以下提出的分类器，说明其是否可以用于改进学习性能并提供简要说明。
+\begin{enumerate}
+	\item \textbf{[5pts]} 使用EM的朴素贝叶斯；
+	\item \textbf{[5pts]} 使用协同训练的朴素贝叶斯；
+	\item \textbf{[5pts]} 使用基于特征选择的朴素贝叶斯；
+\end{enumerate}
+
+\begin{solution}
+此处用于写解答(中英文均可)
+\end{solution}
+\newpage
+
+\section{[60pts] Dimensionality Reduction}
+请实现三种降维方法：PCA，SVD和ISOMAP，并在降维后的空间上用$1$-NN方法分类。
+\begin{enumerate}
+	\item 数据：我们给出了两个数据集，都是二分类的数据。可以从\url{https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html}找到，同时也可以在提交作业的目录文件夹中找名为“two datasets”的压缩文件下载使用。每个数据集都由训练集和测试集组成。
+	\item 格式：再每个数据集中，每一行表示一个带标记的样例，即每行最后一列表示对应样例的标记，其余列表示对应样例的特征。
+\end{enumerate}
+
+具体任务描述如下：
+\begin{enumerate}
+	\item \textbf{[20pts]} 请实现PCA完成降维（方法可在参考书\url{http://www.charuaggarwal.net/Data-Mining.htm} 中 Section 2.4.3.1 中找到）
+	\subitem 首先，仅使用训练数据学习投影矩阵；
+	\subitem 其次，用学得投影矩阵将训练数据与测试数据投影到 $k$-维空间 ($k=10,20,30$)；
+	\subitem 最后，在降维后空间上用$1$-NN预测降维后$k$维数据对应的标记 ($k=10,20,30$)，并汇报准确率。注意，测试数据集中的真实标记仅用来计算准确率。
+	\item \textbf{[20pts]} 请实现SVD完成降维（方法在上述参考书 Section 2.4.3.2 中找到）
+	\subitem 首先，仅使用训练数据学习投影矩阵；
+	\subitem 其次，用学得投影矩阵将训练数据与测试数据投影到 $k$-维空间 ($k=10,20,30$)；
+	\subitem 最后，在降维后空间上用$1$-NN预测降维后$k$维数据对应的标记 ($k=10,20,30$)，并汇报准确率。注意，测试数据集中的真实标记仅用来计算准确率。
+	\item \textbf{[20pts]} 请实现ISOMAP完成降维（方法在参考书 Section 3.2.1.7 中找到）
+	\subitem 首先，使用训练数据与测试数据学习投影矩阵。在这一步中，请用$4$-NN来构建权重图。（请注意此处$4$仅仅是用来举例的，可以使用其他 $k$-NN, $k\geq 4$并给出你选择的k。如果发现构建的权重图不连通，请查找可以解决该问题的方法并汇报你使用的方法）
+	\subitem 其次，用学得投影矩阵将训练数据与测试数据投影到 $k$-维空间 ($k=10,20,30$)。
+	\subitem 最后，在降维后空间上用$1$-NN预测降维后$k$维数据对应的标记 ($k=10,20,30$)，并汇报准确率。注意，测试数据集中的真实标记仅用来计算准确率。
+\end{enumerate}
+
+可以使用已有的工具、库、函数等直接计算特征值和特征向量，执行矩阵的SVD分解，计算graph上两个节点之间的最短路。PCA/SVD/ISOMAP 和 $1$-NN 中的其他步骤必须由自己实现。
+
+报告中需要包含三个方法的伪代码和最终的结果。最终结果请以表格形式呈现，表中包含三种方法在两个数据集中，不同 $k=10,20,30$ 下的准确率。
+\newpage
+
+\begin{solution}
+	此处用于写解答(中英文均可)
+	\begin{enumerate}
+	\item PCA降维的结果如表$1$所示：
+	\begin{table}[htbp]
+  		\centering
+  		\begin{tabular}{cccp{38mm}}
+	    \toprule
+	    \textbf{数据集} & \textbf{k=10} & \textbf{k=20} & \textbf{k=30} \\
+	    \midrule
+	    sonar  & 0.582524 & 0.563107 & 0.563107\\
+	    splice & 0.758161 & 0.762759 & 0.735632\\
+	    \bottomrule
+  		\end{tabular}
+  		\caption{PCA降维结果}\label{table:1}
+	\end{table}
+
+	其中PCA的伪代码为如算法$1$所示：
+	   	\begin{algorithm}[htbp]  
+	        \caption{PCA算法}  
+	        \begin{algorithmic}[1] %每行显示行号  
+	            \Require 训练集矩阵$\mathbf{X}=\{\mathbf{x_1}, \mathbf{x_2},\dots,\mathbf{x_m}\}$，低维空间维数$d$ 
+	            \Ensure 投影矩阵$\mathbf{W}$及均值向量$\bar{\mathbf{x}}$  
+	            \State 求均值向量：$\bar{\mathbf{x}} \gets \frac{1}{m}\sum_{i=1}^{m}\mathbf{x_i}$；
+	            \State 对所有样本进行中心化：$\mathbf{x_i} \gets \mathbf{x_i} - \bar{\mathbf{x}}$；
+	            \State 计算协方差矩阵$\mathbf{B}\mathbf{B}^T$；
+	            \State 对协方差矩阵$\mathbf{B}\mathbf{B}^T$做特征值分解；
+	            \State 取最大的d个特征值对应的特征向量组成投影矩阵$\mathbf{W}=\{\mathbf{w_1}, \mathbf{w_2},\dots,\mathbf{w_d}\}$；
+	            \State \Return{$\mathbf{W},\bar{\mathbf{x}}$}
+	        \end{algorithmic}  
+    	\end{algorithm} 
+
+    对新数据降维时，只需用均值向量进行中心化后乘以投影矩阵即可。
+	\item SVD降维的结果如表$2$所示：
+	\begin{table}[htbp]
+  		\centering
+  		\begin{tabular}{cccp{38mm}}
+	    \toprule
+	    \textbf{数据集} & \textbf{k=10} & \textbf{k=20} & \textbf{k=30} \\
+	    \midrule
+	    sonar  & 0.582524 & 0.563107 & 0.563107\\
+	    splice & 0.758161 & 0.762759 & 0.735632\\
+	    \bottomrule
+  		\end{tabular}
+  		\caption{SVD降维结果}\label{table:1}
+	\end{table}
+
+	其中SVD降维的伪代码如算法$2$所示：
+	\begin{algorithm}[htbp]  
+        \caption{SVD算法}  
+        \begin{algorithmic}[1] %每行显示行号  
+ 			\Require 训练集矩阵$\mathbf{X}=\{\mathbf{x_1}, \mathbf{x_2},\dots,\mathbf{x_m}\}$，低维空间维数$d$ 
+	        \Ensure 投影矩阵$\mathbf{W}$及均值向量$\bar{\mathbf{x}}$  
+	        \State 求均值向量：$\bar{\mathbf{x}} \gets \frac{1}{m}\sum_{i=1}^{m}\mathbf{x_i}$；
+	        \State 对所有样本进行中心化得到矩阵$\mathbf{C}$：$\mathbf{c_i} \gets \mathbf{x_i} - \bar{\mathbf{x}}$；
+            \State 对矩阵$\mathbf{C}$进行奇异值分解：$\mathbf{C}=\mathbf{U}\mathbf{\sum}\mathbf{V^T}$；
+            \State 令$\mathbf{W}$为$\mathbf{V^T}$的前$d$行组成的矩阵的转置；
+            \State \Return{$\mathbf{W},\bar{\mathbf{x}}$}
+        \end{algorithmic}  
+    \end{algorithm} 
+
+    对新数据降维时，只需用均值向量进行中心化后乘以投影矩阵即可。
+\newpage
+	\item ISOMAP降维的结果如表$3$所示（取$k=10$即$10$近邻）：
+	\begin{table}[htbp]
+  		\centering
+  		\begin{tabular}{cccp{38mm}}
+	    \toprule
+	    \textbf{数据集} & \textbf{k=10} & \textbf{k=20} & \textbf{k=30} \\
+	    \midrule
+	    sonar  & 0.543689 & 0.543689 & 0.543689\\
+	    splice & 0.758161 & 0.762759 & 0.735632\\
+	    \bottomrule
+  		\end{tabular}
+  		\caption{ISOMAP降维结果}\label{table:1}
+	\end{table}
+
+	其中ISOMAP降维的伪代码如算法$3$所示：
+	\begin{algorithm}[htbp]  
+        \caption{ISOMAP算法}  
+        \begin{algorithmic}[1] %每行显示行号  
+ 			\Require 训练集矩阵$\mathbf{X}=\{\mathbf{x_1}, \mathbf{x_2},\dots,\mathbf{x_m}\}$，低维空间维数$d$，近邻参数k
+	        \Ensure  矩阵$\mathbf{X}$在低维空间的投影；
+	        \For{$i = 1 \to m$}
+	        	\State 计算$\mathbf{x_i}$的$k$近邻；
+	        	\State 将$\mathbf{x_i}$与$k$近邻点的距离设为欧式距离，与其余点的距离设为无穷大（很大的值即可）；
+	        \EndFor
+	        \State 利用最短距离算法计算任意两个样本间的最短距离矩阵$D$：$d_{i,j} = dist(\mathbf{x_i}, \mathbf{x_j})$；
+	        \State 将$D$作为MDS算法的输入；
+            \State \Return{$MDS$算法的输出}
+        \end{algorithmic}  
+    \end{algorithm} 
+
+    注：MDS算法的细节见书本$[2]$的$10.3$小节。
+\end{enumerate}
+
+\end{solution}
+\newpage
+\begin{thebibliography}{}
+\bibitem[1]{1} https://blog.csdn.net/huangjx36/article/details/78056375
+\bibitem[2]{2} 机器学习，周志华
+\end{thebibliography}
+
+\end{document}
