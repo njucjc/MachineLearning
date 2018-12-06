@@ -149,8 +149,10 @@ $$\mathbb{I}(y=j)=
 		1& \text{若$y$等于$j$}\\
 		0& \text{若$y$不等于$j$}
 		\end{cases}$$
-		则其对数似然为：
-
+		给定数据集为$\{(\mathbf{x_i}, y_i)\}_{i=1}^m$，则其对数似然为：
+		\begin{eqnarray}
+			l &=& \sum_{i=1}^m\sum_{k=1}^K\mathbb{I}(y_i=k)\ln{p(y_i|\mathbf{x_i})}
+		\end{eqnarray}
 	\item 这是我的解答
 \end{enumerate}
 \end{solution}
