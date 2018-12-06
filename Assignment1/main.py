@@ -52,8 +52,10 @@ def test():
         reduction_test_data = svd_test(np.array(test_data), mean_vecs, v)
         reduction_train_data = svd_test(np.array(train_data), mean_vecs, v)
     else:
-        reduction_test_data = isomap(np.array(test_data), n=args.dim)
-        reduction_train_data = isomap(np.array(train_data), n=args.dim)
+        merge_data = train_data + test_data
+        result = isomap(np.array(merge_data), n=args.dim)
+        reduction_test_data = result[len(train_data):]
+        reduction_train_data = result[:len(train_data)]
 
     acc = eval(reduction_test_data, test_labels, reduction_train_data, train_labels)
     print('ACC = ' + str(acc))
