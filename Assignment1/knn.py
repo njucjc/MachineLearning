@@ -26,10 +26,5 @@ def knn(x, data, labels, k):
         vote_label = labels[sorted_dist_idx[i]]
         count[vote_label] = count.get(vote_label, 0) + 1
 
-    max_count = 0
-    for key, value in count.items():
-        if value > max_count:
-            max_count = value
-            max_idx = key
-    return max_idx
+    return max(count, key=count.get)
     

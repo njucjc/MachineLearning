@@ -312,13 +312,23 @@ $$\mathbb{I}(y=j)=
 	        	\State 计算$\mathbf{x_i}$的$k$近邻；
 	        	\State 将$\mathbf{x_i}$与$k$近邻点的距离设为欧式距离，与其余点的距离设为无穷大（很大的值即可）；
 	        \EndFor
-	        \State 利用最短距离算法计算任意两个样本间的最短距离矩阵$D$：$d_{i,j} = dist(\mathbf{x_i}, \mathbf{x_j})$；
-	        \State 将$D$作为MDS算法的输入；
+	        \State 利用最短距离算法计算任意两个样本间的最短距离矩阵$\mathbf{D}$：$d_{i,j} = dist(\mathbf{x_i}, \mathbf{x_j})$；
+	        \State 将$\mathbf{D}$作为MDS算法的输入；
             \State \Return{MDS算法的输出}
         \end{algorithmic}  
     \end{algorithm} 
 
-    注：MDS算法的细节见书本$[2]$的$10.3$小节。
+	\begin{algorithm}[htbp]  
+	    \caption{MDS算法}  
+	    \begin{algorithmic}[1] %每行显示行号  
+	 		\Require 距离矩阵$\mathbf{D}$，其元素$dist_{ij}$为样本$\mathbf{x_i}$到样本$\mathbf{x_j}$的距离；低维空间维数$d$
+		    \Ensure 降维后的矩阵
+		    \State 求矩阵$\mathbf{D}$的内积矩阵$\mathbf{B}$;
+		    \State 对内积矩阵$\mathbf{B}$做特征值分解；
+		    \State 取$\mathbf{A}$为$d$个最大的特征值所构成的对角矩阵，$\mathbf{V}$为相对应的特征向量矩阵；
+	        \State \Return{$\mathbf{VA}^{1/2}$}
+	   \end{algorithmic}  
+	\end{algorithm} 
 \end{enumerate}
 
 \end{solution}
