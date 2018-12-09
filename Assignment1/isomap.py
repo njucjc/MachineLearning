@@ -34,7 +34,7 @@ def floyd(m,k=10):
                     d1[i, j] = d1[i, k]+d1[k, j]
     return d1
 
-def mds(m):
+def mds(m, n):
     row, col = m.shape
     d2 = np.square(m)
     
@@ -46,16 +46,7 @@ def mds(m):
     for i in range(row):
         for j in range(col):
             b[i, j] = (dij + d2[i, j] - di[i] - dj[j]) / (-2)
-    return b
-
-def isomap(data, n=10, k=10):
-    """
-    输入：原始数据矩阵、降维后的维度、k近邻
-    输出：降维后的矩阵
-    """
-    m = get_dis_matrix(data)
-    m = floyd(m,k)
-    b = mds(m)
+    
     eig_vals, eig_vecs = np.linalg.eigh(b)
     eig_vals_idx = np.argsort(-eig_vals)
     eig_vals = eig_vals[eig_vals_idx]
@@ -63,3 +54,13 @@ def isomap(data, n=10, k=10):
     eig_vals_z = np.diag(eig_vals[0:n])
     eig_vecs_z = eig_vecs[:,0:n]
     return np.dot(eig_vecs_z, np.sqrt(eig_vals_z))
+
+def isomap(data, n=10, k=10):
+    """
+    输入：原始数据矩阵、降维后的维度、k近邻
+    输出：降维后的矩阵
+    """
+    m = get_dis_matrix(data)
+    m = floyd(m,k) 
+
+    return mds(m, n)
