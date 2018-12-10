@@ -116,7 +116,7 @@ $$\mathbb{I}(y=j)=
 \begin{solution}
 此处用于写解答(中英文均可)
 \begin{enumerate}
-	\item 对于所有的K个可能的分类结果，运用$K-1$个独立的二元对数几率回归模型建模，即把其中一个类别看作主类别，然后将其他$K-1$个类别和选取的主类别分别进行对数几率回归。据此，若将类别$K$作为主类别，可以得到如下$K-1$个式子：
+	\item 对于所有的K个可能的分类结果，运用$K-1$个独立的二元对数几率回归模型建模，即把其中一个类别看作主类别，然后将其他$K-1$个类别和选取的主类别分别进行对数几率回归。据此，若将类别$K$作为主类别，可以得到如下$K-1$个式子[1]：
 		\begin{eqnarray}
 			\ln\frac{p(y=1|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_1^\mathrm{T}\mathbf{x}+b_1\\
 			\ln\frac{p(y=2|\mathbf{x})}{p(y=K|\mathbf{x})}&=&\mathbf{w}_2^\mathrm{T}\mathbf{x}+b_2 \nonumber\\
@@ -349,7 +349,7 @@ $$\mathbb{I}(y=j)=
     \end{algorithm} 
 
     注：距离采用Floyd算法计算，速度较慢。
-    
+
 	\begin{algorithm}[htbp]  
 	    \caption{MDS算法}  
 	    \begin{algorithmic}[1] %每行显示行号  
