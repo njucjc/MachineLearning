@@ -276,13 +276,13 @@ $$\mathbb{I}(y=j)=
 	   	\begin{algorithm}[htbp]  
 	        \caption{PCA算法}  
 	        \begin{algorithmic}[1] %每行显示行号  
-	            \Require 训练集矩阵$\mathbf{X}=\{\mathbf{x_1}, \mathbf{x_2},\dots,\mathbf{x_m}\}$，低维空间维数$d$ 
+	            \Require 训练集矩阵$\mathbf{X}=\{\mathbf{x}_1, \mathbf{x}_2,\dots,\mathbf{x}_m\}$，低维空间维数$d$ 
 	            \Ensure 投影矩阵$\mathbf{W}$及均值向量$\bar{\mathbf{x}}$  
-	            \State 求均值向量：$\bar{\mathbf{x}} \gets \frac{1}{m}\sum_{i=1}^{m}\mathbf{x_i}$；
-	            \State 对所有样本进行中心化：$\mathbf{x_i} \gets \mathbf{x_i} - \bar{\mathbf{x}}$；
+	            \State 求均值向量：$\bar{\mathbf{x}} \gets \frac{1}{m}\sum_{i=1}^{m}\mathbf{x}_i$；
+	            \State 对所有样本进行中心化：$\mathbf{x}_i \gets \mathbf{x}_i - \bar{\mathbf{x}}$；
 	            \State 计算协方差矩阵$\mathbf{B}\mathbf{B}^T$；
 	            \State 对协方差矩阵$\mathbf{B}\mathbf{B}^T$做特征值分解；
-	            \State 取最大的d个特征值对应的特征向量组成投影矩阵$\mathbf{W}=\{\mathbf{w_1}, \mathbf{w_2},\dots,\mathbf{w_d}\}$；
+	            \State 取最大的d个特征值对应的特征向量组成投影矩阵$\mathbf{W}=\{\mathbf{w}_1, \mathbf{w}_2,\dots,\mathbf{w}_d\}$；
 	            \State \Return{$\mathbf{W},\bar{\mathbf{x}}$}
 	        \end{algorithmic}  
     	\end{algorithm} 
@@ -295,28 +295,26 @@ $$\mathbb{I}(y=j)=
 	    \toprule
 	    \textbf{数据集} & \textbf{k=10} & \textbf{k=20} & \textbf{k=30} \\
 	    \midrule
-	    sonar  & 0.582524 & 0.563107 & 0.563107\\
-	    splice & 0.758161 & 0.762759 & 0.735632\\
+	    sonar  & 0.592233 & 0.582524 & 0.563107\\
+	    splice & 0.758621 & 0.764138 & 0.748046\\
 	    \bottomrule
   		\end{tabular}
   		\caption{SVD降维结果}\label{table:1}
 	\end{table}
 
-	其中SVD降维的伪代码如算法$2$所示：
+	其中SVD降维的伪代码如算法$2$所示，对新数据降维时，只需乘以投影矩阵即可。
 	\begin{algorithm}[htbp]  
         \caption{SVD算法}  
         \begin{algorithmic}[1] %每行显示行号  
- 			\Require 训练集矩阵$\mathbf{X}=\{\mathbf{x_1}, \mathbf{x_2},\dots,\mathbf{x_m}\}$，低维空间维数$d$ 
-	        \Ensure 投影矩阵$\mathbf{W}$及均值向量$\bar{\mathbf{x}}$  
-	        \State 求均值向量：$\bar{\mathbf{x}} \gets \frac{1}{m}\sum_{i=1}^{m}\mathbf{x_i}$；
-	        \State 对所有样本进行中心化得到矩阵$\mathbf{C}$：$\mathbf{c_i} \gets \mathbf{x_i} - \bar{\mathbf{x}}$；
-            \State 对矩阵$\mathbf{C}$进行奇异值分解：$\mathbf{C}=\mathbf{U}\mathbf{\sum}\mathbf{V^T}$；
+ 			\Require 训练集矩阵$\mathbf{X}=\{\mathbf{x}_1, \mathbf{x}_2,\dots,\mathbf{x}_m\}$，低维空间维数$d$ 
+	        \Ensure 投影矩阵$\mathbf{W}$
+            \State 对矩阵$\mathbf{X}$进行奇异值分解：$\mathbf{X}=\mathbf{U}\mathbf{\sum}\mathbf{V^T}$；
             \State 令$\mathbf{W}$为$\mathbf{V^T}$的前$d$行组成的矩阵的转置；
-            \State \Return{$\mathbf{W},\bar{\mathbf{x}}$}
+            \State \Return{$\mathbf{W}$}
         \end{algorithmic}  
     \end{algorithm} 
 
-    对新数据降维时，只需用均值向量进行中心化后乘以投影矩阵即可。
+    
 \newpage
 	\item ISOMAP降维的结果如表$3$所示（取$k=10$即$10$近邻，图不连通的问题采用利用一个较大的值代替进行无穷大近似计算）：
 	\begin{table}[htbp]
@@ -336,13 +334,13 @@ $$\mathbb{I}(y=j)=
 	\begin{algorithm}[htbp]  
         \caption{ISOMAP算法}  
         \begin{algorithmic}[1] %每行显示行号  
- 			\Require 训练集矩阵$\mathbf{X}=\{\mathbf{x_1}, \mathbf{x_2},\dots,\mathbf{x_m}\}$，低维空间维数$d$，近邻参数k
+ 			\Require 训练集矩阵$\mathbf{X}=\{\mathbf{x}_1, \mathbf{x}_2,\dots,\mathbf{x}_m\}$，低维空间维数$d$，近邻参数k
 	        \Ensure  矩阵$\mathbf{X}$在低维空间的投影；
 	        \For{$i = 1 \to m$}
-	        	\State 计算$\mathbf{x_i}$的$k$近邻；
-	        	\State 将$\mathbf{x_i}$与$k$近邻点的距离设为欧式距离，与其余点的距离设为无穷大（很大的值即可）；
+	        	\State 计算$\mathbf{x}_i$的$k$近邻；
+	        	\State 将$\mathbf{x}_i$与$k$近邻点的距离设为欧式距离，与其余点的距离设为无穷大（很大的值即可）；
 	        \EndFor
-	        \State 利用最短距离算法计算任意两个样本间的最短距离矩阵$\mathbf{D}$：$d_{i,j} = dist(\mathbf{x_i}, \mathbf{x_j})$；
+	        \State 利用最短距离算法计算任意两个样本间的最短距离矩阵$\mathbf{D}$：$d_{i,j} = dist(\mathbf{x}_i, \mathbf{x}_j)$；
 	        \State 将$\mathbf{D}$作为MDS算法的输入；
             \State \Return{MDS算法的输出}
         \end{algorithmic}  
@@ -353,7 +351,7 @@ $$\mathbb{I}(y=j)=
 	\begin{algorithm}[htbp]  
 	    \caption{MDS算法}  
 	    \begin{algorithmic}[1] %每行显示行号  
-	 		\Require 距离矩阵$\mathbf{D}$，其元素$dist_{ij}$为样本$\mathbf{x_i}$到样本$\mathbf{x_j}$的距离；低维空间维数$d$
+	 		\Require 距离矩阵$\mathbf{D}$，其元素$dist_{ij}$为样本$\mathbf{x}_i$到样本$\mathbf{x}_j$的距离；低维空间维数$d$
 		    \Ensure 降维后的矩阵
 		    \State 求矩阵$\mathbf{D}$的内积矩阵$\mathbf{B}$;
 		    \State 对内积矩阵$\mathbf{B}$做特征值分解；

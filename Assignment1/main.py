@@ -27,8 +27,8 @@ def train():
         mean_vecs, eig_vecs = pca_train(np.array(train_data), args.dim)
         np.savez(os.path.join(args.output, 'pca' + str(args.dim) + '.npz'), mean_vecs=mean_vecs, eig_vecs=eig_vecs)
     elif args.alg == 'svd':
-        v, mean_vecs = svd_train(np.array(train_data), args.dim)
-        np.savez(os.path.join(args.output, 'svd' + str(args.dim) + '.npz'), v=v, mean_vecs=mean_vecs)
+        v = svd_train(np.array(train_data), args.dim)
+        np.savez(os.path.join(args.output, 'svd' + str(args.dim) + '.npz'), v=v)
     else:
         pass
 
@@ -47,10 +47,9 @@ def test():
     elif args.alg == 'svd':
         saved_data = np.load(os.path.join(args.output, args.alg + str(args.dim) + '.npz'))
         v = saved_data['v']
-        mean_vecs = saved_data['mean_vecs']
 
-        reduction_test_data = svd_test(np.array(test_data), mean_vecs, v)
-        reduction_train_data = svd_test(np.array(train_data), mean_vecs, v)
+        reduction_test_data = svd_test(np.array(test_data), v)
+        reduction_train_data = svd_test(np.array(train_data), v)
     else:
         merge_data = train_data + test_data
         result = isomap(np.array(merge_data), n=args.dim)
