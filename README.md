@@ -8,6 +8,9 @@
 - SVD
 - ISOMAP
 
+#### 本项目仓库
+- [machine-learning](https://github.com/njucjc/machine-learning)
+
 #### 参考资料
 - [PCA参考](https://www.cnblogs.com/lzllovesyl/p/5235137.html)
 - [SVD参考](https://blog.csdn.net/u012421852/article/details/80439403)
