@@ -156,18 +156,18 @@ $$\mathbb{I}(y=j)=
 		其中：
 		\begin{eqnarray}
 			p(y_i|\mathbf{x_i})&=&\sum_{j=1}^K\mathbb{I}(y_i=j)p(y_i=j|\mathbf{x_i})\\
-			&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i = j)\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i = j)\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}\nonumber
+			&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i = j)\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i = K)\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}\nonumber
 		\end{eqnarray}
 		将$(1.6)$代回$(1.5)$得：
 		\begin{eqnarray}
 			l(\mathbf{w}, b) &=& \sum_{i=1}^m\ln p(y_i|\mathbf{x_i})\\
-			&=&\sum_{i=1}^m\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i=j)\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}]\nonumber\\
-			&=&\sum_{i=1}^m\ln[\frac{\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=j)}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}]\nonumber\\
-			&=&\sum_{i=1}^m(\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=j)]-\ln[1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}])\nonumber
+			&=&\sum_{i=1}^m\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i=K)\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}]\nonumber\\
+			&=&\sum_{i=1}^m\ln[\frac{\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=K)}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}]\nonumber\\
+			&=&\sum_{i=1}^m(\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=K)]-\ln[1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}])\nonumber
 		\end{eqnarray}
 		又因为$\sum_{j=1}^K\mathbb{I}(y_i=j)=1$，所以：
 		\begin{eqnarray}
-			\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=j)*1]&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\ln[e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}]\\
+			\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=K)*1]&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\ln[e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}]\\
 			&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)(\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j)\nonumber
 		\end{eqnarray}
 		将$(1.8)$代回$(1.7)$得
