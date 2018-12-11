@@ -8,6 +8,14 @@
 - SVD
 - ISOMAP
 
+#### 环境依赖
+- python 3.6.7
+- numpy 1.15.4
+
+#### 如何运行
+- 运行python3 main.py --help查看帮助
+- 再根据帮助提示运行本代码（另外注意，ISOMAP求距离非常慢）
+
 #### 本项目仓库
 - [machine-learning](https://github.com/njucjc/machine-learning)
 
