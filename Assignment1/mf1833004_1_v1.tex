@@ -130,7 +130,7 @@ $$\mathbb{I}(y=j)=
 			&\dots& \nonumber\\
 			p(y={K-1}|\mathbf{x})&=&p(y=K|\mathbf{x})e^{\mathbf{w}_{K-1}^\mathrm{T}\mathbf{x}+b_{K-1}} \nonumber
 		\end{eqnarray}
-		注意到最终所有类别的概率加起来为1，故将式子$(1.2)$左右相加，我们可以得到如下式子：
+		注意到最终所有类别的概率加起来为$1$，故将式子$(1.2)$左右相加，我们可以得到如下式子：
 		\begin{eqnarray}
 			p(y=K|\mathbf{x})&=&1-\sum_{k=1}^{K-1}p(y=K|\mathbf{x})e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}\\
 			&=&\frac{1}{1+\sum_{k=1}^{K-1} e^{\mathbf{w}_k^\mathrm{T}\mathbf{x}+b_k}}\nonumber
@@ -149,40 +149,31 @@ $$\mathbb{I}(y=j)=
 		1& \text{若$y$等于$j$}\\
 		0& \text{若$y$不等于$j$}
 		\end{cases}$$
-		给定数据集为$\{(\mathbf{x_i}, y_i)\}_{i=1}^m$，则其对数似然为：
+		注意到：
 		\begin{eqnarray}
-			l(\mathbf{w}, b) &=& \sum_{i=1}^m\ln p(y_i|\mathbf{x_i})
+			 \sum_{j=1}^{K}\mathbb{I}(y=j)&=&1
 		\end{eqnarray}
-		其中：
+		给定数据集为$\{(\mathbf{x_i}, y_i)\}_{i=1}^m$，结合式$(1.3)$、$(1.4)$和$(1.5)$，可得其对数似然为：
 		\begin{eqnarray}
-			p(y_i|\mathbf{x_i})&=&\sum_{j=1}^K\mathbb{I}(y_i=j)p(y_i=j|\mathbf{x_i})\\
-			&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i = j)\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i = K)\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}\nonumber
+			l(\mathbf{w}, b) &=& \sum_{i=1}^m\sum_{j=1}^K\mathbb{I}(y_i=j)\ln p(y_i|\mathbf{x}_i)\\
+			&=&\sum_{i=1}^m(\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\ln\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i=K)\ln\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}})\nonumber\\
+			&=&\sum_{i=1}^m(\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)(\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j)-\sum_{j=1}^K\mathbb{I}(y_i=j)\ln[1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}])\nonumber\\
+			&=&\sum_{i=1}^m(\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)(\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j)-\ln[1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}])\nonumber
 		\end{eqnarray}
-		将$(1.6)$代回$(1.5)$得：
-		\begin{eqnarray}
-			l(\mathbf{w}, b) &=& \sum_{i=1}^m\ln p(y_i|\mathbf{x_i})\\
-			&=&\sum_{i=1}^m\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\frac{e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}+\mathbb{I}(y_i=K)\frac{1}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}]\nonumber\\
-			&=&\sum_{i=1}^m\ln[\frac{\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=K)}{1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}}]\nonumber\\
-			&=&\sum_{i=1}^m(\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=K)]-\ln[1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}])\nonumber
-		\end{eqnarray}
-		又因为$\sum_{j=1}^K\mathbb{I}(y_i=j)=1$，所以：
-		\begin{eqnarray}
-			\ln[\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}+\mathbb{I}(y_i=K)*1]&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\ln[e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}]\\
-			&=&\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)(\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j)\nonumber
-		\end{eqnarray}
-		将$(1.8)$代回$(1.7)$得
-		\begin{eqnarray}
-			l(\mathbf{w}, b) &=& \sum_{i=1}^m(\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)(\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j)-\ln[1+\sum_{j=1}^{K-1}e^{\mathbf{w}_j^\mathrm{T}\mathbf{x}_i+b_j}])
-		\end{eqnarray}
-		式子$(1.9)$即为所得。
-	\item 为了方便描述，我们令$\beta_j=(\mathbf{w}_j;b_j),\widetilde{\mathbf{x}}=(\mathbf{x};1)$,则式$(1.9)$可改写为：
+		式$(1.6)$即为对数似然的最终结果。
+	\item 为了方便描述，我们令$\beta_j=(\mathbf{w}_j;b_j),\widetilde{\mathbf{x}}=(\mathbf{x};1)$,则式$(1.6)$可改写为：
 	\begin{eqnarray}
 		l(\beta) &=& \sum_{i=1}^m(\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\beta_j^\mathrm{T}\widetilde{\mathbf{x}}_i-\ln[1+\sum_{j=1}^{K-1}e^{\beta_j^\mathrm{T}\widetilde{\mathbf{x}}_i}])
 	\end{eqnarray}
 	所以，求其梯度为：
 	\begin{eqnarray}
-		\bigtriangledown l(\beta) &=& \sum_{i=1}^m(\sum_{j=1}^{K-1}\mathbb{I}(y_i=j)\widetilde{\mathbf{x}}_i-\frac{\sum_{j=1}^{K-1}\widetilde{\mathbf{x}}_i e^{\beta_j^\mathrm{T}\widetilde{\mathbf{x}}_i}}{1+\sum_{j=1}^{K-1}e^{\beta_j^\mathrm{T}\widetilde{\mathbf{x}}_i}})
+		\frac{\partial l(\beta)}{\partial\beta_j} &=& \sum_{i=1}^m(\mathbb{I}(y_i=j)\widetilde{\mathbf{x}}_i-\frac{\widetilde{\mathbf{x}}_i e^{\beta_j^\mathrm{T}\widetilde{\mathbf{x}}_i}}{1+\sum_{j=1}^{K-1}e^{\beta_j^\mathrm{T}\widetilde{\mathbf{x}}_i}})
 	\end{eqnarray}
+	则，对前$K-1$类有式$(1.9)$成立：
+	\begin{eqnarray}
+		\frac{\partial l(\beta)}{\partial\beta_j} &=& \sum_{i=1}^m(\mathbb{I}(y_i=j)-p(y_i=j|\widetilde{\mathbf{x}}_i))\widetilde{\mathbf{x}}_i
+	\end{eqnarray}
+	式$(1.8)$是对数似然梯度的最终结果。
 
 \end{enumerate}
 \end{solution}
