@@ -12,7 +12,7 @@ def filter_stopwods(stop_words, words):
     Input: a list of stop words, a list of words
     Output: a list of words that filtered stop words
     """
-    filtered_words = [w.lower() for w in words if not w.lower() in stop_words]
+    filtered_words = [w for w in words if not w in stop_words]
     return filtered_words
 
 def filter_punc(words):
@@ -29,6 +29,7 @@ if __name__ == '__main__':
 
     corpus = []
     for line in content:
+        line = line.lower()
         words = word_tokenize(line)
         words = filter_stopwods(stop_words, words)
         words = filter_punc(words)
