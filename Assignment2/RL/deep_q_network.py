@@ -120,7 +120,15 @@ def trainNetwork(s, readout, h_fc1, sess):
         action_index = 0
 
         # to complete the e-greedy action selection phase
-        # TODO
+        if t % FRAME_PER_ACTION == 0:
+            if random.random() <= epsilon:
+                action_index = random.randrange(ACTIONS)
+                a_t[action_index] = 1
+            else:
+                action_index = np.argmax(readout_t)
+                a_t[action_index] = 1
+        else:
+            a_t[0] = 1
 
         # scale down epsilon
         if epsilon > FINAL_EPSILON and t > OBSERVE:
@@ -144,7 +152,21 @@ def trainNetwork(s, readout, h_fc1, sess):
             minibatch = random.sample(D, BATCH)
 
             # get the corresponding batch variables and perform q learning
-            # TODO
+            s_j_batch, a_batch, r_batch, s_j1_batch = [], [], [], []
+            for d in minibatch:
+                s_j_batch.append(d[0])
+                a_batch.append(d[1])
+                r_batch.append(d[2])
+                s_j1_batch.append(d[3])
+
+            y_batch = []
+            readout_s_j1 = readout.eval(feed_dict = {s : s_j1_batch})
+            for i in range(len(minibatch)):
+                terminal = minibatch[i][4]
+                if not terminal:
+                    y_batch.append(r_batch[i] + GAMMA * np.max(readout_s_j1[i]))
+                else:
+                    y_batch.append(r_batch[i])
 
             # perform gradient step and a batch of BATCH_SIZE frames are used
             train_step.run(feed_dict = {
