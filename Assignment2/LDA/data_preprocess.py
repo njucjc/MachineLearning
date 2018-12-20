@@ -23,7 +23,7 @@ def filter_punc(words):
     filtered_words = [w for w in words if re.search('[A-Za-z]', w)]
     return filtered_words
 
-if __name__ == '__main__':
+def preprocess():
     content = load_data('data/news.txt')
     stop_words = set(stopwords.words('english'))
 
